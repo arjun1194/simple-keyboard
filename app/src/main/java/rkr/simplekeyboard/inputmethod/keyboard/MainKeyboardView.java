@@ -350,7 +350,8 @@ public final class MainKeyboardView extends KeyboardView implements MoreKeysPane
         key.onPressed();
         System.out.println("key.toShortString() = " + key.toShortString());
         // save key to database
-        logWriter.writeToFile(key.toShortString());
+        logWriter.writeToFile(key);
+
         invalidateKey(key);
         if (withPreview && !key.noKeyPreview()) {
             showKeyPreview(key);
